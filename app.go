@@ -206,6 +206,9 @@ func (a *App) buildHiResSection() fyne.CanvasObject {
 func (a *App) buildThumbwheelSection() fyne.CanvasObject {
 	a.thumbDivertCheck = widget.NewCheck("Divert Thumbwheel (handle in logid)", func(b bool) {
 		a.config.Thumbwheel.Divert = b
+		if a.thumbLeftBtn == nil {
+			return
+		}
 		a.thumbLeftBtn.Disable()
 		a.thumbRightBtn.Disable()
 		a.thumbTapBtn.Disable()

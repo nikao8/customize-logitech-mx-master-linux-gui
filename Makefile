@@ -6,10 +6,10 @@ PREFIX  := /usr/local
 
 all: build
 
-build:
+build: clean
 	$(GO) build -tags ci -o $(BINARY)
 
-build-release:
+build-release: clean
 	$(GO) build -o $(BINARY)
 
 clean:

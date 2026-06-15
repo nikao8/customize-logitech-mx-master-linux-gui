@@ -10,7 +10,8 @@ sudo pacman -S --needed \
     cmake \
     libevdev \
     systemd-libs \
-    libconfig
+    libconfig \
+    libxxf86vm
 
 if ! command -v logid &>/dev/null; then
     if command -v yay &>/dev/null; then

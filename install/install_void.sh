@@ -14,7 +14,8 @@ sudo xbps-install -S \
     libevdev-devel \
     libconfig-devel \
     glib-devel \
-    pkg-config
+    pkg-config \
+    libXxf86vm-devel
 
 if ! command -v logid &>/dev/null; then
     echo "==> Compilando e instalando logiops (logid)..."

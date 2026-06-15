@@ -14,7 +14,8 @@ sudo dnf install -y \
     libevdev-devel \
     systemd-devel \
     libconfig-devel \
-    glib2-devel
+    glib2-devel \
+    libXxf86vm-devel
 
 if ! command -v logid &>/dev/null; then
     echo "==> Compilando e instalando logiops (logid)..."

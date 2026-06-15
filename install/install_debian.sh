@@ -16,7 +16,8 @@ sudo apt install -y \
     libevdev-dev \
     libudev-dev \
     libconfig++-dev \
-    libglib2.0-dev
+    libglib2.0-dev \
+    libxxf86vm-dev
 
 if ! command -v logid &>/dev/null; then
     echo "==> Compilando e instalando logiops (logid)..."

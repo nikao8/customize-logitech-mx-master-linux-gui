@@ -23,7 +23,7 @@ O script `install.sh` instala as dependências (Go, bibliotecas gráficas e o lo
 ```bash
 make build-release        # compila o binário
 sudo make install         # instala em /usr/local/bin
-./logid-config-gui
+sudo ./logid-config-gui
 ```
 
 ## Uso

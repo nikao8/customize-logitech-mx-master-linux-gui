@@ -54,6 +54,24 @@ type ButtonRowWidget struct {
 	editBtn     *widget.Button
 }
 
+func copyClipboard(app *App, url *url.URL) {
+	// abrir link nao funciona quando app roda como root
+	//err := fyne.CurrentApp().OpenURL(url)
+	//fmt.Println("Tentando abrir link, erro: ", err)
+	//if err != nil {
+	app.window.Clipboard().SetContent(url.String())
+	dialog.ShowInformation(
+		Translate("Link copiado!", "Link copied!", currentLang),
+		Translate(
+			"O link foi copiado para a área de transferência. cole no seu navegador.",
+			"The link has been copied to your clipboard. Please paste it in your browser.",
+			currentLang,
+		),
+		app.window,
+	)
+	//}
+}
+
 func NewApp(w fyne.Window) *App {
 	cfg := DefaultConfig()
 	if loaded, err := LoadConfigFromFile("/etc/logid.cfg"); err == nil {
@@ -114,11 +132,20 @@ func (a *App) BuildUI() fyne.CanvasObject {
 	koFiURL, _ := url.Parse("https://ko-fi.com/nikao8")
 	gitURL, _ := url.Parse("https://github.com/nikao8/customize-logitech-mx-master-linux")
 
+	koFiLink := widget.NewHyperlink("❤️ Donate (Ko-fi)", koFiURL)
+	koFiLink.OnTapped = func() {
+		copyClipboard(a, koFiURL)
+	}
+	gitLink := widget.NewHyperlink("⭐ GitHub", gitURL)
+	gitLink.OnTapped = func() {
+		copyClipboard(a, gitURL)
+	}
+
 	topBar := container.NewVBox(
 		container.NewHBox(
-			widget.NewHyperlink("❤️ Donate (Ko-fi)", koFiURL),
+			koFiLink,
 			widget.NewLabel("  |  "),
-			widget.NewHyperlink("⭐ GitHub", gitURL),
+			gitLink,
 			widget.NewLabel("  |  "),
 			widget.NewLabel(Version),
 			layout.NewSpacer(),

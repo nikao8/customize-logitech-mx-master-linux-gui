@@ -1,4 +1,4 @@
-package main
+package src
 
 import (
 	"fmt"
@@ -13,12 +13,12 @@ After=multi-user.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/logid
+ExecStart=/usr/bin/logidtt
 Restart=always
 RestartSec=3
 StandardOutput=journal
 StandardError=journal
-
+uu
 [Install]
 WantedBy=multi-user.target
 `

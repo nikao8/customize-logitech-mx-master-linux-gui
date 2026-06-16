@@ -1,4 +1,4 @@
-package main
+package src
 
 import (
 	"fmt"
@@ -10,6 +10,7 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
+	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -36,7 +37,7 @@ type App struct {
 	thumbRightBtn    *widget.Button
 	thumbTapBtn      *widget.Button
 
-	buttonWidgets []*ButtonRowWidget
+	buttonWidgets   []*ButtonRowWidget
 	deviceInfoLabel *widget.Label
 
 	previewEntry *widget.Entry
@@ -114,11 +115,11 @@ func (a *App) BuildUI() fyne.CanvasObject {
 	)
 
 	tabs := container.NewAppTabs(
-		container.NewTabItem(Translate("Geral", "General", currentLang), container.NewVBox(generalTab, layout.NewSpacer())),
-		container.NewTabItem(Translate("Botões", "Buttons", currentLang), container.NewVBox(buttonsTab, layout.NewSpacer())),
-		container.NewTabItem(Translate("Roda Lateral", "Thumbwheel", currentLang), container.NewVBox(thumbTab, layout.NewSpacer())),
-		container.NewTabItem(Translate("Visualizar", "Preview", currentLang), container.NewVBox(previewTab, layout.NewSpacer())),
-		container.NewTabItem(Translate("Salvar", "Save", currentLang), serviceTab),
+		container.NewTabItemWithIcon(Translate("Geral", "General", currentLang), theme.SettingsIcon(), container.NewVBox(generalTab, layout.NewSpacer())),
+		container.NewTabItemWithIcon(Translate("Botões", "Buttons", currentLang), theme.NavigateNextIcon(), container.NewVBox(buttonsTab, layout.NewSpacer())),
+		container.NewTabItemWithIcon(Translate("Roda Lateral", "Thumbwheel", currentLang), theme.MoveDownIcon(), container.NewVBox(thumbTab, layout.NewSpacer())),
+		container.NewTabItemWithIcon(Translate("Visualizar", "Preview", currentLang), theme.VisibilityIcon(), container.NewVBox(previewTab, layout.NewSpacer())),
+		container.NewTabItemWithIcon(Translate("Salvar", "Save", currentLang), theme.DocumentSaveIcon(), serviceTab),
 	)
 
 	content := container.NewBorder(topBar, nil, nil, nil, tabs)
@@ -531,7 +532,7 @@ func (a *App) showActionEditorDialog(title string, action *Action, onSave func()
 }
 
 func (a *App) buildServiceSection() fyne.CanvasObject {
-	statusLabel := widget.NewLabel("")
+	statusLabel := widget.NewRichText()
 	outputEntry := widget.NewMultiLineEntry()
 	outputEntry.SetMinRowsVisible(8)
 	outputEntry.Disable()
@@ -540,17 +541,32 @@ func (a *App) buildServiceSection() fyne.CanvasObject {
 	configPathEntry.SetText("/etc/logid.cfg")
 
 	updateStatus := func() {
+		statusLabel.Segments = nil
 		if IsServiceRunning() {
-			statusLabel.SetText(Translate("Status: Executando", "Status: Running", currentLang))
+			statusLabel.Segments = append(statusLabel.Segments, &widget.TextSegment{
+				Text: Translate("Status: Executando", "Status: Running", currentLang),
+				Style: widget.RichTextStyle{
+					ColorName: theme.ColorNameSuccess,
+					SizeName:  theme.SizeNameText,
+				},
+			})
 		} else {
-			statusLabel.SetText(Translate("Status: Parado", "Status: Stopped", currentLang))
+			statusLabel.Segments = append(statusLabel.Segments, &widget.TextSegment{
+				Text: Translate("Status: Parado", "Status: Stopped", currentLang),
+				Style: widget.RichTextStyle{
+					ColorName: theme.ColorNameError,
+					SizeName:  theme.SizeNameText,
+				},
+			})
 		}
+		statusLabel.Refresh()
 	}
 
 	refreshBtn := widget.NewButton(Translate("Atualizar Status", "Refresh Status", currentLang), func() {
 		log.Printf("Refresh Status clicked")
 		updateStatus()
 	})
+	refreshBtn.Alignment = widget.ButtonAlignCenter
 
 	saveConfigBtn := widget.NewButton(Translate("Salvar Configuração", "Save Configuration", currentLang), func() {
 		log.Printf("Save Configuration clicked, path=%s", configPathEntry.Text)
@@ -564,6 +580,7 @@ func (a *App) buildServiceSection() fyne.CanvasObject {
 		}
 		outputEntry.SetText(fmt.Sprintf(Translate("Configuração salva em %s\n\n%s", "Configuration saved to %s\n\n%s", currentLang), path, content))
 		dialog.ShowInformation(Translate("Sucesso", "Success", currentLang), fmt.Sprintf(Translate("Configuração salva em %s", "Configuration saved to %s", currentLang), path), a.window)
+		updateStatus()
 	})
 
 	resetConfigBtn := widget.NewButton(Translate("Redefinir para Padrão", "Reset to Default", currentLang), func() {
@@ -572,6 +589,7 @@ func (a *App) buildServiceSection() fyne.CanvasObject {
 		a.applyConfigToUI()
 		outputEntry.SetText(Translate("Configuração redefinida para valores padrão", "Configuration reset to default values", currentLang))
 		dialog.ShowInformation(Translate("Sucesso", "Success", currentLang), Translate("Configuração redefinida para valores padrão", "Configuration reset to default values", currentLang), a.window)
+		updateStatus()
 	})
 
 	installServiceBtn := widget.NewButton(Translate("Instalar e Iniciar Serviço", "Install & Start Service", currentLang), func() {
@@ -615,6 +633,7 @@ func (a *App) buildServiceSection() fyne.CanvasObject {
 		dialog.ShowInformation(Translate("Sucesso", "Success", currentLang), Translate("Serviço parado", "Service stopped", currentLang), a.window)
 		updateStatus()
 	})
+	stopServiceBtn.Alignment = widget.ButtonAlignCenter
 
 	restartServiceBtn := widget.NewButton(Translate("Reiniciar Serviço", "Restart Service", currentLang), func() {
 		log.Printf("Restart Service clicked")
@@ -628,6 +647,7 @@ func (a *App) buildServiceSection() fyne.CanvasObject {
 		dialog.ShowInformation(Translate("Sucesso", "Success", currentLang), Translate("Serviço reiniciado", "Service restarted", currentLang), a.window)
 		updateStatus()
 	})
+	restartServiceBtn.Alignment = widget.ButtonAlignCenter
 
 	removeServiceBtn := widget.NewButton(Translate("Remover Serviço", "Remove Service", currentLang), func() {
 		log.Printf("Remove Service clicked")
@@ -653,16 +673,17 @@ func (a *App) buildServiceSection() fyne.CanvasObject {
 	box := container.NewVBox(
 		widget.NewLabelWithStyle(Translate("Gerenciamento de Serviço", "Service Management", currentLang), fyne.TextAlignCenter, fyne.TextStyle{Bold: true}),
 		widget.NewSeparator(),
-		container.NewBorder(nil, nil, widget.NewLabel(Translate("Caminho do Config:", "Config path:", currentLang)), nil, configPathEntry),
-		refreshBtn,
-		statusLabel,
+		container.NewBorder(nil, nil, widget.NewLabel(Translate("Caminho do arquivo de configuração:", "Config path:", currentLang)), nil, configPathEntry),
+
 		widget.NewSeparator(),
 		widget.NewLabelWithStyle(Translate("Ações", "Actions", currentLang), fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
 		saveConfigBtn,
 		resetConfigBtn,
 		installServiceBtn,
-		container.NewHBox(stopServiceBtn, restartServiceBtn),
 		removeServiceBtn,
+		container.NewHBox(stopServiceBtn, restartServiceBtn, refreshBtn),
+		statusLabel,
+
 		widget.NewSeparator(),
 		widget.NewLabelWithStyle(Translate("Unidade de Serviço Systemd", "Systemd Service Unit", currentLang), fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
 		servicePreview,

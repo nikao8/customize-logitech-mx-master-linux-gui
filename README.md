@@ -6,7 +6,7 @@ Interface gráfica para gerar e gerenciar a configuração e personalização do
 
 ## Instalação
 
-Baixe o `.tar.gz` da sua distribuição na [página de releases](https://github.com/nikao8/logitech-mx-master-customization-linux/releases):
+Baixe o `.tar.gz` da sua distribuição na [página de releases](https://github.com/nikao8/logitech-mx-master-customization-linux-gui/releases):
 
 ```bash
 tar -xzf logid-config-gui-<distro>-<versao>.tar.gz

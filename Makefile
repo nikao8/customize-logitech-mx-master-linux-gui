@@ -3,6 +3,7 @@ GO       := go
 PREFIX   := /usr/local
 VERSION  := v1.0
 RELEASE  := release
+LDFLAGS  := -ldflags="-X 'logitech-mx-master-customization-linux/src.Version=$(VERSION)'"
 
 .PHONY: all build build clean install test run
 .PHONY: build-debian build-arch build-fedora build-all
@@ -11,10 +12,10 @@ all: release run
 
 
 build: clean
-	$(GO) build -o $(BINARY) ./src/cmd/main.go
+	$(GO) build $(LDFLAGS) -o $(BINARY) ./src/cmd/main.go
 
 build-debian: clean
-	$(GO) build -o $(BINARY) ./src/cmd/main.go
+	$(GO) build $(LDFLAGS) -o $(BINARY) ./src/cmd/main.go
 	mkdir -p $(RELEASE)
 	TMP=$$(mktemp -d) && \
 	cp $(BINARY) $$TMP/ && \
@@ -25,7 +26,7 @@ build-debian: clean
 	echo "==> Release criado: $(RELEASE)/$(BINARY)-debian-$(VERSION).tar.gz"
 
 build-arch: clean
-	$(GO) build -o $(BINARY) ./src/cmd/main.go
+	$(GO) build $(LDFLAGS) -o $(BINARY) ./src/cmd/main.go
 	mkdir -p $(RELEASE)
 	TMP=$$(mktemp -d) && \
 	cp $(BINARY) $$TMP/ && \
@@ -36,7 +37,7 @@ build-arch: clean
 	echo "==> Release criado: $(RELEASE)/$(BINARY)-arch-$(VERSION).tar.gz"
 
 build-fedora: clean
-	$(GO) build -o $(BINARY) ./src/cmd/main.go
+	$(GO) build $(LDFLAGS) -o $(BINARY) ./src/cmd/main.go
 	mkdir -p $(RELEASE)
 	TMP=$$(mktemp -d) && \
 	cp $(BINARY) $$TMP/ && \

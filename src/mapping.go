@@ -24,6 +24,8 @@ const (
 
 var currentLang Lang = LangEN
 
+var Version = "dev"
+
 type ButtonInfo struct {
 	CID  uint32
 	Name string

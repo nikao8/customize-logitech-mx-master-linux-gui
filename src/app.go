@@ -3,6 +3,7 @@ package src
 import (
 	"fmt"
 	"log"
+	"net/url"
 	"strconv"
 	"strings"
 
@@ -110,10 +111,20 @@ func (a *App) BuildUI() fyne.CanvasObject {
 
 	serviceTab := a.buildServiceSection()
 
-	topBar := container.NewHBox(
-		layout.NewSpacer(),
-		widget.NewLabel(Translate("Idioma:", "Language:", currentLang)),
-		a.langSelect,
+	koFiURL, _ := url.Parse("https://ko-fi.com/nikao8")
+	gitURL, _ := url.Parse("https://github.com/nikao8/customize-logitech-mx-master-linux")
+
+	topBar := container.NewVBox(
+		container.NewHBox(
+			widget.NewHyperlink("❤️ Donate (Ko-fi)", koFiURL),
+			widget.NewLabel("  |  "),
+			widget.NewHyperlink("⭐ GitHub", gitURL),
+			widget.NewLabel("  |  "),
+			widget.NewLabel(Version),
+			layout.NewSpacer(),
+			widget.NewLabel(Translate("Idioma:", "Language:", currentLang)),
+			a.langSelect,
+		),
 	)
 
 	tabs := container.NewAppTabs(

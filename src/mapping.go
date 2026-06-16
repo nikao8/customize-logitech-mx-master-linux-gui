@@ -154,6 +154,13 @@ func ButtonName(id string, lang Lang) string {
 	return id
 }
 
+func Translate(pt, en string, lang Lang) string {
+	if lang == LangPT {
+		return pt
+	}
+	return en
+}
+
 var KeyCodes = map[string]uint16{
 	"KEY_ESC": 1, "KEY_1": 2, "KEY_2": 3, "KEY_3": 4, "KEY_4": 5,
 	"KEY_5": 6, "KEY_6": 7, "KEY_7": 8, "KEY_8": 9, "KEY_9": 10,

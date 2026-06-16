@@ -60,7 +60,7 @@ func NewApp(w fyne.Window) *App {
 		window: w,
 		config: cfg,
 	}
-	w.SetTitle("Logitech MX Master Configuration")
+	w.SetTitle(Translate("Configuração do Logitech MX Master", "Logitech MX Master Configuration", currentLang))
 	w.Resize(fyne.NewSize(800, 600))
 	return a
 }
@@ -78,7 +78,7 @@ func (a *App) BuildUI() fyne.CanvasObject {
 	a.langSelect.SetSelected("English")
 
 	generalTab := container.NewVBox(
-		widget.NewLabelWithStyle("General Settings", fyne.TextAlignCenter, fyne.TextStyle{Bold: true}),
+		widget.NewLabelWithStyle(Translate("Configurações Gerais", "General Settings", currentLang), fyne.TextAlignCenter, fyne.TextStyle{Bold: true}),
 		widget.NewSeparator(),
 		a.buildGeneralSection(),
 		widget.NewSeparator(),
@@ -88,19 +88,19 @@ func (a *App) BuildUI() fyne.CanvasObject {
 	)
 
 	buttonsTab := container.NewVBox(
-		widget.NewLabelWithStyle("Button Configuration", fyne.TextAlignCenter, fyne.TextStyle{Bold: true}),
+		widget.NewLabelWithStyle(Translate("Configuração de Botões", "Button Configuration", currentLang), fyne.TextAlignCenter, fyne.TextStyle{Bold: true}),
 		widget.NewSeparator(),
 		a.buildButtonsSection(),
 	)
 
 	thumbTab := container.NewVBox(
-		widget.NewLabelWithStyle("Thumbwheel Configuration", fyne.TextAlignCenter, fyne.TextStyle{Bold: true}),
+		widget.NewLabelWithStyle(Translate("Configuração da Roda Lateral", "Thumbwheel Configuration", currentLang), fyne.TextAlignCenter, fyne.TextStyle{Bold: true}),
 		widget.NewSeparator(),
 		a.buildThumbwheelSection(),
 	)
 
 	previewTab := container.NewVBox(
-		widget.NewLabelWithStyle("Configuration Preview", fyne.TextAlignCenter, fyne.TextStyle{Bold: true}),
+		widget.NewLabelWithStyle(Translate("Visualização da Configuração", "Configuration Preview", currentLang), fyne.TextAlignCenter, fyne.TextStyle{Bold: true}),
 		widget.NewSeparator(),
 		a.previewEntry,
 	)
@@ -109,16 +109,16 @@ func (a *App) BuildUI() fyne.CanvasObject {
 
 	topBar := container.NewHBox(
 		layout.NewSpacer(),
-		widget.NewLabel("Language:"),
+		widget.NewLabel(Translate("Idioma:", "Language:", currentLang)),
 		a.langSelect,
 	)
 
 	tabs := container.NewAppTabs(
-		container.NewTabItem("General", container.NewVBox(generalTab, layout.NewSpacer())),
-		container.NewTabItem("Buttons", container.NewVBox(buttonsTab, layout.NewSpacer())),
-		container.NewTabItem("Thumbwheel", container.NewVBox(thumbTab, layout.NewSpacer())),
-		container.NewTabItem("Preview", container.NewVBox(previewTab, layout.NewSpacer())),
-		container.NewTabItem("Save", serviceTab),
+		container.NewTabItem(Translate("Geral", "General", currentLang), container.NewVBox(generalTab, layout.NewSpacer())),
+		container.NewTabItem(Translate("Botões", "Buttons", currentLang), container.NewVBox(buttonsTab, layout.NewSpacer())),
+		container.NewTabItem(Translate("Roda Lateral", "Thumbwheel", currentLang), container.NewVBox(thumbTab, layout.NewSpacer())),
+		container.NewTabItem(Translate("Visualizar", "Preview", currentLang), container.NewVBox(previewTab, layout.NewSpacer())),
+		container.NewTabItem(Translate("Salvar", "Save", currentLang), serviceTab),
 	)
 
 	content := container.NewBorder(topBar, nil, nil, nil, tabs)
@@ -151,7 +151,7 @@ func (a *App) buildGeneralSection() fyne.CanvasObject {
 
 	form := &widget.Form{
 		Items: []*widget.FormItem{
-			{Text: "Device Name", Widget: a.nameSelect},
+			{Text: Translate("Nome do Dispositivo", "Device Name", currentLang), Widget: a.nameSelect},
 			{Text: "", Widget: a.deviceInfoLabel},
 			{Text: "", Widget: a.dpiLabel},
 			{Text: "", Widget: a.dpiSlider},
@@ -161,7 +161,7 @@ func (a *App) buildGeneralSection() fyne.CanvasObject {
 }
 
 func (a *App) buildSmartShiftSection() fyne.CanvasObject {
-	a.smartShiftCheck = widget.NewCheck("Enable SmartShift", func(b bool) {
+	a.smartShiftCheck = widget.NewCheck(Translate("Ativar SmartShift", "Enable SmartShift", currentLang), func(b bool) {
 		a.config.SmartShift.On = b
 		a.refreshPreview()
 	})
@@ -179,7 +179,7 @@ func (a *App) buildSmartShiftSection() fyne.CanvasObject {
 	}
 
 	box := container.NewVBox(
-		widget.NewLabelWithStyle("SmartShift", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
+		widget.NewLabelWithStyle(Translate("SmartShift", "SmartShift", currentLang), fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
 		a.smartShiftCheck,
 		a.smartShiftLabel,
 		a.smartShiftSlider,
@@ -188,26 +188,26 @@ func (a *App) buildSmartShiftSection() fyne.CanvasObject {
 }
 
 func (a *App) buildHiResSection() fyne.CanvasObject {
-	a.hiresCheck = widget.NewCheck("Enable Hi-Res Scrolling", func(b bool) {
+	a.hiresCheck = widget.NewCheck(Translate("Ativar Scroll de Alta Resolução", "Enable Hi-Res Scrolling", currentLang), func(b bool) {
 		a.config.HiResScroll.Hires = b
 		a.refreshPreview()
 	})
 	a.hiresCheck.SetChecked(a.config.HiResScroll.Hires)
 
-	a.hiresInvertCheck = widget.NewCheck("Invert Scroll", func(b bool) {
+	a.hiresInvertCheck = widget.NewCheck(Translate("Inverter Scroll", "Invert Scroll", currentLang), func(b bool) {
 		a.config.HiResScroll.Invert = b
 		a.refreshPreview()
 	})
 	a.hiresInvertCheck.SetChecked(a.config.HiResScroll.Invert)
 
-	a.hiresTargetCheck = widget.NewCheck("HID++ Target (remap scroll wheel)", func(b bool) {
+	a.hiresTargetCheck = widget.NewCheck(Translate("Destino HID++ (remapear roda de scroll)", "HID++ Target (remap scroll wheel)", currentLang), func(b bool) {
 		a.config.HiResScroll.Target = b
 		a.refreshPreview()
 	})
 	a.hiresTargetCheck.SetChecked(a.config.HiResScroll.Target)
 
 	box := container.NewVBox(
-		widget.NewLabelWithStyle("Hi-Res Scrolling", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
+		widget.NewLabelWithStyle(Translate("Scroll de Alta Resolução", "Hi-Res Scrolling", currentLang), fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
 		a.hiresCheck,
 		a.hiresInvertCheck,
 		a.hiresTargetCheck,
@@ -216,7 +216,7 @@ func (a *App) buildHiResSection() fyne.CanvasObject {
 }
 
 func (a *App) buildThumbwheelSection() fyne.CanvasObject {
-	a.thumbDivertCheck = widget.NewCheck("Divert Thumbwheel (handle in logid)", func(b bool) {
+	a.thumbDivertCheck = widget.NewCheck(Translate("Desviar Roda Lateral (gerenciar no logid)", "Divert Thumbwheel (handle in logid)", currentLang), func(b bool) {
 		a.config.Thumbwheel.Divert = b
 		if a.thumbLeftBtn == nil {
 			return
@@ -233,24 +233,24 @@ func (a *App) buildThumbwheelSection() fyne.CanvasObject {
 	})
 	a.thumbDivertCheck.SetChecked(a.config.Thumbwheel.Divert)
 
-	a.thumbInvertCheck = widget.NewCheck("Invert Direction", func(b bool) {
+	a.thumbInvertCheck = widget.NewCheck(Translate("Inverter Direção", "Invert Direction", currentLang), func(b bool) {
 		a.config.Thumbwheel.Invert = b
 		a.refreshPreview()
 	})
 	a.thumbInvertCheck.SetChecked(a.config.Thumbwheel.Invert)
 
 	a.thumbLeftLabel = widget.NewLabel(a.formatThumbAction(a.config.Thumbwheel.Left))
-	a.thumbLeftBtn = widget.NewButton("Edit", func() {
+	a.thumbLeftBtn = widget.NewButton(Translate("Editar", "Edit", currentLang), func() {
 		a.showActionDialog("thumbwheel_left", &a.config.Thumbwheel.Left)
 	})
 
 	a.thumbRightLabel = widget.NewLabel(a.formatThumbAction(a.config.Thumbwheel.Right))
-	a.thumbRightBtn = widget.NewButton("Edit", func() {
+	a.thumbRightBtn = widget.NewButton(Translate("Editar", "Edit", currentLang), func() {
 		a.showActionDialog("thumbwheel_right", &a.config.Thumbwheel.Right)
 	})
 
 	a.thumbTapLabel = widget.NewLabel(a.formatThumbAction(a.config.Thumbwheel.Tap))
-	a.thumbTapBtn = widget.NewButton("Edit", func() {
+	a.thumbTapBtn = widget.NewButton(Translate("Editar", "Edit", currentLang), func() {
 		a.showActionDialog("thumbwheel_tap", &a.config.Thumbwheel.Tap)
 	})
 
@@ -268,7 +268,7 @@ func (a *App) buildThumbwheelSection() fyne.CanvasObject {
 	)
 
 	box := container.NewVBox(
-		widget.NewLabelWithStyle("Thumbwheel", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
+		widget.NewLabelWithStyle(Translate("Roda Lateral", "Thumbwheel", currentLang), fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
 		a.thumbDivertCheck,
 		a.thumbInvertCheck,
 		widget.NewSeparator(),
@@ -314,7 +314,7 @@ func (a *App) newButtonRow(btn ButtonConfig) *ButtonRowWidget {
 	nameLabel := widget.NewLabel(ButtonName(nameID, currentLang))
 	actionLabel := widget.NewLabel(a.formatAction(btn.Action))
 
-	editBtn := widget.NewButton("Edit", func() {
+	editBtn := widget.NewButton(Translate("Editar", "Edit", currentLang), func() {
 		if idx >= 0 {
 			a.showButtonActionDialog(idx, nameID)
 		}
@@ -380,7 +380,7 @@ func (a *App) showActionEditorDialog(title string, action *Action, onSave func()
 	}
 
 	content := container.NewVBox(
-		widget.NewLabel("Action Type:"),
+		widget.NewLabel(Translate("Tipo de Ação:", "Action Type:", currentLang)),
 		typeSelect,
 	)
 
@@ -413,7 +413,7 @@ func (a *App) showActionEditorDialog(title string, action *Action, onSave func()
 
 	updateContent := func() {
 		content.Objects = []fyne.CanvasObject{
-			widget.NewLabel("Action Type:"),
+			widget.NewLabel(Translate("Tipo de Ação:", "Action Type:", currentLang)),
 			typeSelect,
 		}
 
@@ -427,20 +427,20 @@ func (a *App) showActionEditorDialog(title string, action *Action, onSave func()
 
 		switch selectedType {
 		case "Keypress":
-			content.Add(widget.NewLabel("Keys:"))
+			content.Add(widget.NewLabel(Translate("Teclas:", "Keys:", currentLang)))
 			rebuildKeySelects()
 			content.Add(keyContainer)
 		case "Gestures":
-			content.Add(widget.NewLabel("Configure gestures in the main window"))
+			content.Add(widget.NewLabel(Translate("Configure gestos na janela principal", "Configure gestures in the main window", currentLang)))
 			content.Add(gestureContent)
 		case "CycleDPI":
-			content.Add(widget.NewLabel("DPI values (comma-separated, e.g. 400, 800, 1000, 1200):"))
+			content.Add(widget.NewLabel(Translate("Valores de DPI (separados por vírgula, ex: 400, 800, 1000, 1200):", "DPI values (comma-separated, e.g. 400, 800, 1000, 1200):", currentLang)))
 			content.Add(dpiEntry)
 		case "ChangeDPI":
-			content.Add(widget.NewLabel("DPI increment:"))
+			content.Add(widget.NewLabel(Translate("Incremento de DPI:", "DPI increment:", currentLang)))
 			content.Add(dpiEntry)
 		case "ChangeHost":
-			content.Add(widget.NewLabel("Host (number, 'next', or 'prev'):"))
+			content.Add(widget.NewLabel(Translate("Host (número, 'next' ou 'prev'):", "Host (number, 'next', or 'prev'):", currentLang)))
 			content.Add(hostEntry)
 		}
 		content.Refresh()
@@ -452,7 +452,7 @@ func (a *App) showActionEditorDialog(title string, action *Action, onSave func()
 
 		for idx, s := range keySelects {
 			row := container.NewHBox(
-				widget.NewLabel(fmt.Sprintf("Key %d:", idx+1)),
+				widget.NewLabel(fmt.Sprintf(Translate("Tecla %d:", "Key %d:", currentLang), idx+1)),
 				s,
 			)
 			if len(keySelects) > 1 {
@@ -466,7 +466,7 @@ func (a *App) showActionEditorDialog(title string, action *Action, onSave func()
 			keyContainer.Add(row)
 		}
 
-		addBtn := widget.NewButton("+ Add Key", func() {
+		addBtn := widget.NewButton(Translate("+ Adicionar Tecla", "+ Add Key", currentLang), func() {
 			s := widget.NewSelect(sortedNames, nil)
 			keySelects = append(keySelects, s)
 			rebuildKeySelects()
@@ -481,7 +481,7 @@ func (a *App) showActionEditorDialog(title string, action *Action, onSave func()
 
 	updateContent()
 
-	dialog.ShowCustomConfirm(title, "Save", "Cancel", content, func(b bool) {
+	dialog.ShowCustomConfirm(title, Translate("Salvar", "Save", currentLang), Translate("Cancelar", "Cancel", currentLang), content, func(b bool) {
 		if !b {
 			return
 		}
@@ -541,105 +541,105 @@ func (a *App) buildServiceSection() fyne.CanvasObject {
 
 	updateStatus := func() {
 		if IsServiceRunning() {
-			statusLabel.SetText("Status: Running")
+			statusLabel.SetText(Translate("Status: Executando", "Status: Running", currentLang))
 		} else {
-			statusLabel.SetText("Status: Stopped")
+			statusLabel.SetText(Translate("Status: Parado", "Status: Stopped", currentLang))
 		}
 	}
 
-	refreshBtn := widget.NewButton(ButtonName("Refresh Status", currentLang), func() {
+	refreshBtn := widget.NewButton(Translate("Atualizar Status", "Refresh Status", currentLang), func() {
 		log.Printf("Refresh Status clicked")
 		updateStatus()
 	})
 
-	saveConfigBtn := widget.NewButton(ButtonName("Save Configuration", currentLang), func() {
+	saveConfigBtn := widget.NewButton(Translate("Salvar Configuração", "Save Configuration", currentLang), func() {
 		log.Printf("Save Configuration clicked, path=%s", configPathEntry.Text)
 		content := a.config.Generate()
 		path := configPathEntry.Text
 		err := WriteConfigFile(content, path)
 		if err != nil {
-			outputEntry.SetText(fmt.Sprintf("Error: %v", err))
-			dialog.ShowError(fmt.Errorf("Failed to save configuration:\n%v", err), a.window)
+			outputEntry.SetText(fmt.Sprintf(Translate("Erro: %v", "Error: %v", currentLang), err))
+			dialog.ShowError(fmt.Errorf(Translate("Falha ao salvar configuração:\n%v", "Failed to save configuration:\n%v", currentLang), err), a.window)
 			return
 		}
-		outputEntry.SetText(fmt.Sprintf("Configuration saved to %s\n\n%s", path, content))
-		dialog.ShowInformation("Success", fmt.Sprintf("Configuration saved to %s", path), a.window)
+		outputEntry.SetText(fmt.Sprintf(Translate("Configuração salva em %s\n\n%s", "Configuration saved to %s\n\n%s", currentLang), path, content))
+		dialog.ShowInformation(Translate("Sucesso", "Success", currentLang), fmt.Sprintf(Translate("Configuração salva em %s", "Configuration saved to %s", currentLang), path), a.window)
 	})
 
-	resetConfigBtn := widget.NewButton(ButtonName("Reset to Default", currentLang), func() {
+	resetConfigBtn := widget.NewButton(Translate("Redefinir para Padrão", "Reset to Default", currentLang), func() {
 		log.Printf("Reset to Default clicked")
 		a.config = DefaultConfig()
 		a.applyConfigToUI()
-		outputEntry.SetText("Configuration reset to default values")
-		dialog.ShowInformation("Success", "Configuration reset to default values", a.window)
+		outputEntry.SetText(Translate("Configuração redefinida para valores padrão", "Configuration reset to default values", currentLang))
+		dialog.ShowInformation(Translate("Sucesso", "Success", currentLang), Translate("Configuração redefinida para valores padrão", "Configuration reset to default values", currentLang), a.window)
 	})
 
-	installServiceBtn := widget.NewButton(ButtonName("Install & Start Service", currentLang), func() {
+	installServiceBtn := widget.NewButton(Translate("Instalar e Iniciar Serviço", "Install & Start Service", currentLang), func() {
 		log.Printf("Install & Start Service clicked")
-		outputEntry.SetText("Installing systemd service...\n")
+		outputEntry.SetText(Translate("Instalando serviço systemd...\n", "Installing systemd service...\n", currentLang))
 
 		content := a.config.Generate()
 		if err := WriteConfigFile(content, configPathEntry.Text); err != nil {
-			outputEntry.SetText(fmt.Sprintf("Error writing config: %v", err))
-			dialog.ShowError(fmt.Errorf("Failed to write config:\n%v", err), a.window)
+			outputEntry.SetText(fmt.Sprintf(Translate("Erro ao escrever config: %v", "Error writing config: %v", currentLang), err))
+			dialog.ShowError(fmt.Errorf(Translate("Falha ao escrever config:\n%v", "Failed to write config:\n%v", currentLang), err), a.window)
 			return
 		}
 
 		servicePath := "/etc/systemd/system/logid.service"
 		if err := WriteServiceFile(servicePath); err != nil {
-			outputEntry.SetText(fmt.Sprintf("Error writing service: %v", err))
-			dialog.ShowError(fmt.Errorf("Failed to write service file:\n%v", err), a.window)
+			outputEntry.SetText(fmt.Sprintf(Translate("Erro ao escrever serviço: %v", "Error writing service: %v", currentLang), err))
+			dialog.ShowError(fmt.Errorf(Translate("Falha ao escrever arquivo de serviço:\n%v", "Failed to write service file:\n%v", currentLang), err), a.window)
 			return
 		}
 
 		out, err := EnableAndStartService()
 		if err != nil {
-			outputEntry.SetText(fmt.Sprintf("%s\nError: %v", out, err))
-			dialog.ShowError(fmt.Errorf("Failed to start service:\n%v", err), a.window)
+			outputEntry.SetText(fmt.Sprintf(Translate("%s\nErro: %v", "%s\nError: %v", currentLang), out, err))
+			dialog.ShowError(fmt.Errorf(Translate("Falha ao iniciar serviço:\n%v", "Failed to start service:\n%v", currentLang), err), a.window)
 			return
 		}
 		outputEntry.SetText(out)
-		dialog.ShowInformation("Success", "Service installed and started successfully", a.window)
+		dialog.ShowInformation(Translate("Sucesso", "Success", currentLang), Translate("Serviço instalado e iniciado com sucesso", "Service installed and started successfully", currentLang), a.window)
 		updateStatus()
 	})
 
-	stopServiceBtn := widget.NewButton(ButtonName("Stop Service", currentLang), func() {
+	stopServiceBtn := widget.NewButton(Translate("Parar Serviço", "Stop Service", currentLang), func() {
 		log.Printf("Stop Service clicked")
 		out, err := StopService()
 		if err != nil {
-			outputEntry.SetText(fmt.Sprintf("Error: %v\n%s", err, out))
-			dialog.ShowError(fmt.Errorf("Failed to stop service:\n%v", err), a.window)
+			outputEntry.SetText(fmt.Sprintf(Translate("Erro: %v\n%s", "Error: %v\n%s", currentLang), err, out))
+			dialog.ShowError(fmt.Errorf(Translate("Falha ao parar serviço:\n%v", "Failed to stop service:\n%v", currentLang), err), a.window)
 			return
 		}
 		outputEntry.SetText(out)
-		dialog.ShowInformation("Success", "Service stopped", a.window)
+		dialog.ShowInformation(Translate("Sucesso", "Success", currentLang), Translate("Serviço parado", "Service stopped", currentLang), a.window)
 		updateStatus()
 	})
 
-	restartServiceBtn := widget.NewButton(ButtonName("Restart Service", currentLang), func() {
+	restartServiceBtn := widget.NewButton(Translate("Reiniciar Serviço", "Restart Service", currentLang), func() {
 		log.Printf("Restart Service clicked")
 		out, err := RestartService()
 		if err != nil {
-			outputEntry.SetText(fmt.Sprintf("Error: %v\n%s", err, out))
-			dialog.ShowError(fmt.Errorf("Failed to restart service:\n%v", err), a.window)
+			outputEntry.SetText(fmt.Sprintf(Translate("Erro: %v\n%s", "Error: %v\n%s", currentLang), err, out))
+			dialog.ShowError(fmt.Errorf(Translate("Falha ao reiniciar serviço:\n%v", "Failed to restart service:\n%v", currentLang), err), a.window)
 			return
 		}
 		outputEntry.SetText(out)
-		dialog.ShowInformation("Success", "Service restarted", a.window)
+		dialog.ShowInformation(Translate("Sucesso", "Success", currentLang), Translate("Serviço reiniciado", "Service restarted", currentLang), a.window)
 		updateStatus()
 	})
 
-	removeServiceBtn := widget.NewButton(ButtonName("Remove Service", currentLang), func() {
+	removeServiceBtn := widget.NewButton(Translate("Remover Serviço", "Remove Service", currentLang), func() {
 		log.Printf("Remove Service clicked")
-		outputEntry.SetText("Removing systemd service...\n")
+		outputEntry.SetText(Translate("Removendo serviço systemd...\n", "Removing systemd service...\n", currentLang))
 		out, err := RemoveService()
 		if err != nil {
-			outputEntry.SetText(fmt.Sprintf("%s\nError: %v", out, err))
-			dialog.ShowError(fmt.Errorf("Failed to remove service:\n%v", err), a.window)
+			outputEntry.SetText(fmt.Sprintf(Translate("%s\nErro: %v", "%s\nError: %v", currentLang), out, err))
+			dialog.ShowError(fmt.Errorf(Translate("Falha ao remover serviço:\n%v", "Failed to remove service:\n%v", currentLang), err), a.window)
 			return
 		}
 		outputEntry.SetText(out)
-		dialog.ShowInformation("Success", "Service removed successfully", a.window)
+		dialog.ShowInformation(Translate("Sucesso", "Success", currentLang), Translate("Serviço removido com sucesso", "Service removed successfully", currentLang), a.window)
 		updateStatus()
 	})
 
@@ -651,23 +651,23 @@ func (a *App) buildServiceSection() fyne.CanvasObject {
 	updateStatus()
 
 	box := container.NewVBox(
-		widget.NewLabelWithStyle("Service Management", fyne.TextAlignCenter, fyne.TextStyle{Bold: true}),
+		widget.NewLabelWithStyle(Translate("Gerenciamento de Serviço", "Service Management", currentLang), fyne.TextAlignCenter, fyne.TextStyle{Bold: true}),
 		widget.NewSeparator(),
-		container.NewBorder(nil, nil, widget.NewLabel("Config path:"), nil, configPathEntry),
+		container.NewBorder(nil, nil, widget.NewLabel(Translate("Caminho do Config:", "Config path:", currentLang)), nil, configPathEntry),
 		refreshBtn,
 		statusLabel,
 		widget.NewSeparator(),
-		widget.NewLabelWithStyle("Actions", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
+		widget.NewLabelWithStyle(Translate("Ações", "Actions", currentLang), fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
 		saveConfigBtn,
 		resetConfigBtn,
 		installServiceBtn,
 		container.NewHBox(stopServiceBtn, restartServiceBtn),
 		removeServiceBtn,
 		widget.NewSeparator(),
-		widget.NewLabelWithStyle("Systemd Service Unit", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
+		widget.NewLabelWithStyle(Translate("Unidade de Serviço Systemd", "Systemd Service Unit", currentLang), fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
 		servicePreview,
 		widget.NewSeparator(),
-		widget.NewLabelWithStyle("Output", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
+		widget.NewLabelWithStyle(Translate("Saída", "Output", currentLang), fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
 		outputEntry,
 	)
 

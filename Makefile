@@ -1,7 +1,7 @@
 BINARY   := logid-config-gui
 GO       := go
 PREFIX   := /usr/local
-VERSION  := v1.0 #$(shell git describe --tags --always 2>/dev/null || echo "dev")
+VERSION  := v1.0
 RELEASE  := release
 
 .PHONY: all build build clean install test run

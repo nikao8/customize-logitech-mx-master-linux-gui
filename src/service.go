@@ -7,9 +7,27 @@ import (
 	"strings"
 )
 
+/** bkp service
 const serviceContent = `[Unit]
 Description=Logitech MX Master Configuration Daemon
 After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/logid
+Restart=always
+RestartSec=3
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+`
+
+*/
+
+const serviceContent = `[Unit]
+Description=Logitech MX Master Configuration Daemon
 
 [Service]
 Type=simple
